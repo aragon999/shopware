@@ -32,7 +32,8 @@ class Shopware_Controllers_Widgets_Index extends Enlight_Controller_Action
      */
     public function preDispatch()
     {
-        if ($this->Request()->getActionName() === 'refreshStatistic') {
+        $actionName = $this->Request()->getActionName();
+        if (in_array(strtolower($actionName), ['refreshstatistic', 'cspreport'])) {
             $this->Front()->Plugins()->ViewRenderer()->setNoRender();
         }
     }
@@ -48,6 +49,16 @@ class Shopware_Controllers_Widgets_Index extends Enlight_Controller_Action
         /** @var $plugin Shopware_Plugins_Frontend_Statistics_Bootstrap */
         $plugin = Shopware()->Plugins()->Frontend()->Statistics();
         $plugin->updateLog($request, $response);
+    }
+
+    public function cspReportAction()
+    {
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        $cspReport = $data['csp-report'];
+        if ($cspReport) {
+            $this->get('corelogger')->error('CSP Violoation', [$cspReport]);
+        }
     }
 
     /**

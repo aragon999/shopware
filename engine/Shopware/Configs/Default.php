@@ -369,4 +369,17 @@ return array_replace_recursive([
     'logger' => [
         'level' => $this->Environment() !== 'production' ? Logger::DEBUG : Logger::ERROR,
     ],
+    'contentSecurityPolicy' => [
+        'enabled' => true,
+        'cspReportUrl' => 'DEFAULT_CSP_REPORT_URL',
+        'csp' => 'upgrade-insecure-requests',
+        'cspReportOnly' => 'default-src https:;report-uri %shopware.contentSecurityPolicy.cspReportUrl%; report-to csp-endpoint',
+        'cspReportTo' => [
+            'group' => 'csp-endpoint',
+            'max-age' => 10886400,
+            'endpoints' => [
+                ['url' => '%shopware.contentSecurityPolicy.cspReportUrl%'],
+            ],
+        ],
+    ],
 ], $customConfig);

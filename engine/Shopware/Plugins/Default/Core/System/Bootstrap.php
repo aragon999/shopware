@@ -76,6 +76,32 @@ class Shopware_Plugins_Core_System_Bootstrap extends Shopware_Components_Plugin_
         if ($plugin->checkIsBot($args->getRequest()->getHeader('USER_AGENT'))) {
             Enlight_Components_Session::destroy(true, false);
         }
+
+        // Set Content-Security-Policy Reponse Headers
+        $front = $container->get('front');
+        $request = $front->Request();
+        $cpsConfig = $container->getParameter('shopware.contentSecurityPolicy');
+        if ($cpsConfig['enabled'] && $request->isSecure()) {
+            $response = $front->Response();
+            $router = $front->Router();
+
+            $cspReportTo = json_encode($cpsConfig['cspReportTo'], \JSON_UNESCAPED_SLASHES);
+            $cspReportOnly = $cpsConfig['cspReportOnly'];
+            if (strpos($cpsConfig['$cspReportUrl'], 'DEFAULT_CSP_REPORT_URL') !== 0) {
+                $defaultCspUrl = $router->assemble([
+                    'module' => 'widgets',
+                    'sViewport' => 'index',
+                    'action' => 'cspreport',
+                ]);
+
+                $cspReportTo = str_replace('DEFAULT_CSP_REPORT_URL', $defaultCspUrl, $cspReportTo);
+                $cspReportOnly = str_replace('DEFAULT_CSP_REPORT_URL', $defaultCspUrl, $cspReportOnly);
+            }
+
+            $response->setHeader('Content-Security-Policy', $cpsConfig['csp']);
+            $response->setHeader('Report-To', $cspReportTo);
+            $response->setHeader('Content-Security-Policy-Report-Only', $cspReportOnly);
+        }
     }
 
     /**
