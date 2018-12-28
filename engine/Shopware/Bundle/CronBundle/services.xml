@@ -1,0 +1,50 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <service id="shopware_cron.job_hydrator" class="Shopware\Bundle\CronBundle\Gateway\Hydrator\JobHydrator" />
+
+        <service id="shopware_cron.job_persister_gateway" class="Shopware\Bundle\CronBundle\Gateway\JobPersisterGateway">
+            <argument type="service" id="dbal_connection" />
+        </service>
+
+        <service id="shopware_cron.cron_list_gateway" class="Shopware\Bundle\CronBundle\Gateway\CronListGateway">
+            <argument type="service" id="dbal_connection" />
+            <argument type="service" id="shopware_cron.job_hydrator" />
+        </service>
+
+        <service id="shopware_cron.cron_list_service" class="Shopware\Bundle\CronBundle\Service\CronListService">
+            <argument type="service" id="shopware_cron.cron_list_gateway" />
+            <argument type="service" id="shopware_cron.job_persister_gateway" />
+            <argument type="service" id="events" />
+        </service>
+
+        <service id="shopware_cron.cron_shopware_resolver" class="Shopware\Bundle\CronBundle\Cron\Resolver\ShopwareResolver">
+            <argument type="service" id="shopware_cron.cron_list_service" />
+            <argument type="service" id="events" />
+        </service>
+
+        <service id="shopware_cron.cron_single_job_shopware_resolver" class="Shopware\Bundle\CronBundle\Cron\Resolver\SingleJobShopwareResolver">
+            <argument type="service" id="shopware_cron.cron_list_service" />
+            <argument type="service" id="events" />
+        </service>
+
+        <service id="shopware_cron.cron_command_line_executor" class="Shopware\Bundle\CronBundle\Cron\Executor\CommandLineExecutor" />
+
+        <service id="shopware_cron.cron_list_command" class="Shopware\Bundle\CronBundle\Command\CronListCommand">
+            <argument type="service" id="shopware_cron.cron_list_service" />
+            <tag name="console.command" command="sw:cron:listnew"/>
+        </service>
+
+        <service id="shopware_cron.cron_run_command" class="Shopware\Bundle\CronBundle\Command\CronRunCommand">
+            <argument type="service" id="shopware_cron.cron_command_line_executor" />
+            <argument type="service" id="shopware_cron.cron_shopware_resolver" />
+            <tag name="console.command" command="sw:cron:runnew"/>
+        </service>
+
+    </services>
+</container>
