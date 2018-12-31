@@ -27,8 +27,8 @@ namespace Shopware\Bundle\CronBundle\Cron\Job;
 use Cron\Job\AbstractJob;
 use Cron\Report\JobReport;
 use Enlight_Event_EventManager as EventManager;
-use Shopware\Bundle\CronBundle\Cron\IntervalSchedule;
 use Shopware\Bundle\CronBundle\Cron\Report\DatabaseJobReport;
+use Shopware\Bundle\CronBundle\Cron\Schedule\IntervalSchedule;
 use Shopware\Bundle\CronBundle\Gateway\JobPersisterGatewayInterface;
 use Shopware\Bundle\CronBundle\Struct;
 
@@ -86,7 +86,7 @@ class DatabaseJob extends AbstractJob
     /**
      * @return Struct\Job
      */
-    public function getJobStruct()
+    public function getJobStruct(): Struct\Job
     {
         return $this->jobStruct;
     }
@@ -98,7 +98,7 @@ class DatabaseJob extends AbstractJob
      *
      * @return bool
      */
-    public function valid(\DateTime $now)
+    public function valid(\DateTime $now): bool
     {
         return $this->force || parent::valid($now) && !$this->isRunning();
     }
@@ -126,27 +126,40 @@ class DatabaseJob extends AbstractJob
             //$report->addOutput($job->getData());
             $report->setEndTime(microtime(true));
             $report->setSuccessful(true);
-        } catch (\Exception $e) {
+
+            $this->eventManager->notify('Shopware_CronJob_Finished_' . $jobStruct->getAction(), [
+                'subject' => $this,
+                'job' => $report->getJob(),
+            ]);
+        } catch (\Throwable $e) {
             $report->setSuccessful(false);
             $jobStruct->setEnd(new \DateTime());
 
             if ($jobStruct->shouldDisableOnError()) {
                 $jobStruct->setActive(false);
             }
+
+            $this->eventManager->notify('Shopware_CronJob_Error_' . $jobStruct->getAction(), [
+                'subject' => $this,
+                'job' => $report->getJob(),
+            ]);
         }
 
         $this->jobPersister->updateJob($report->getJob());
     }
 
-    public function isRunning()
+    /**
+     * {@inheritdoc}
+     */
+    public function isRunning(): bool
     {
         return ($this->jobStruct) ? $this->jobStruct->isRunning() : false;
     }
 
     /**
-     * @return JobReport
+     * {@inheritdoc}
      */
-    public function createReport()
+    public function createReport(): JobReport
     {
         return new DatabaseJobReport($this, $this->jobPersister);
     }

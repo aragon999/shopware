@@ -62,6 +62,7 @@ class ShopwareResolver extends ArrayResolver
      * @param eventManager             $eventManager
      */
     public function __construct(
+        \IteratorAggregate $jobs,
         CronListServiceInterface $cronListService,
         EventManager $eventManager
     ) {
@@ -71,7 +72,7 @@ class ShopwareResolver extends ArrayResolver
         $this->shopwareJobsLoaded = false;
         $this->force = false;
 
-        parent::__construct([]);
+        parent::__construct(iterator_to_array($jobs, false));
     }
 
     public function setForce(bool $force)

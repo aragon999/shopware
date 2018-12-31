@@ -29,9 +29,9 @@ use Shopware\Bundle\CronBundle\Cron\Job\DatabaseJob;
 use Shopware\Bundle\CronBundle\Gateway\JobPersisterGatewayInterface;
 
 /**
- * JobReport contains the output of a job.
+ * @category Shopware
  *
- * @author Dries De Peuter <dries@nousefreak.be>
+ * @copyright Copyright (c) shopware AG (http://www.shopware.de)
  */
 class DatabaseJobReport extends JobReport
 {

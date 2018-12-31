@@ -24,11 +24,13 @@
         </service>
 
         <service id="shopware_cron.cron_shopware_resolver" class="Shopware\Bundle\CronBundle\Cron\Resolver\ShopwareResolver">
+            <argument type="tagged" tag="shopware_cron.cron_job" />
             <argument type="service" id="shopware_cron.cron_list_service" />
             <argument type="service" id="events" />
         </service>
 
         <service id="shopware_cron.cron_single_job_shopware_resolver" class="Shopware\Bundle\CronBundle\Cron\Resolver\SingleJobShopwareResolver">
+            <argument type="tagged" tag="shopware_cron.cron_job" />
             <argument type="service" id="shopware_cron.cron_list_service" />
             <argument type="service" id="events" />
         </service>
@@ -37,13 +39,13 @@
 
         <service id="shopware_cron.cron_list_command" class="Shopware\Bundle\CronBundle\Command\CronListCommand">
             <argument type="service" id="shopware_cron.cron_list_service" />
-            <tag name="console.command" command="sw:cron:listnew"/>
+            <tag name="console.command" command="sw:cron:list"/>
         </service>
 
         <service id="shopware_cron.cron_run_command" class="Shopware\Bundle\CronBundle\Command\CronRunCommand">
             <argument type="service" id="shopware_cron.cron_command_line_executor" />
             <argument type="service" id="shopware_cron.cron_shopware_resolver" />
-            <tag name="console.command" command="sw:cron:runnew"/>
+            <tag name="console.command" command="sw:cron:run"/>
         </service>
 
     </services>

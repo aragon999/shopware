@@ -47,6 +47,7 @@ class Shopware_Controllers_Backend_Cron extends Enlight_Controller_Action implem
         $cronManager = Shopware()->Container()->get('cron');
 
         set_time_limit(0);
+
         while (($job = $cronManager->getNextJob()) !== null) {
             echo 'Processing ' . $job->getName() . "\n";
             $cronManager->runJob($job);

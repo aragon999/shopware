@@ -27,6 +27,7 @@ namespace Shopware\Bundle\CronBundle\Cron\Executor;
 use Cron\Executor\Executor as CronExecutor;
 use Cron\Executor\ExecutorSet;
 use Cron\Report\CronReport;
+use Shopware\Bundle\CronBundle\Cron\Job\DatabaseJob;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -57,13 +58,13 @@ class CommandLineExecutor extends CronExecutor
         foreach ($this->sets as $set) {
             $jobName = $this->getJobName($set);
 
-            $this->writeConsoleOutput("Starting \"{$jobName}\"");
+            $this->writeConsoleOutput(sprintf('Starting "%s"', $jobName));
 
             // Execute Job
             $report->addJobReport($set->getReport());
             $set->run();
 
-            $this->writeConsoleOutput("Finished \"{$jobName}\"");
+            $this->writeConsoleOutput(sprintf('Finished "%s"', $jobName));
         }
     }
 
@@ -75,13 +76,13 @@ class CommandLineExecutor extends CronExecutor
     protected function getJobName(ExecutorSet $set): string
     {
         $job = $set->getJob();
-        if ($job instanceof \Shopware\Bundle\CronBundle\Cron\Job\DatabaseJob) {
+        if ($job instanceof DatabaseJob) {
             $jobStruct = $job->getJobStruct();
 
             return "{$jobStruct->getName()} ({$jobStruct->getAction()})";
         }
 
-        return 'Could not determine a qualified name';
+        throw new \InvalidArgumentException(sprintf('Could not determine a qualified name of the given Job (%s)', get_class($job)));
     }
 
     /**

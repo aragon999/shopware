@@ -48,8 +48,14 @@ class CronListService implements CronListServiceInterface
     private $jobPersister;
 
     /**
+     * @var EventManager
+     */
+    private $eventManager;
+
+    /**
      * @param CronListGatewayInterface     $cronListGateway
      * @param JobPersisterGatewayInterface $jobPersister
+     * @param EventManager                 $eventManager
      */
     public function __construct(
         CronListGatewayInterface $cronListGateway,
@@ -69,7 +75,7 @@ class CronListService implements CronListServiceInterface
         $jobPersister = $this->jobPersister;
         $eventManager = $this->eventManager;
 
-        return array_map(function (Job $job) use ($jobPersister, $eventManager, $force) {
+        return array_map(function (Job $job) use ($jobPersister, $eventManager) {
             return new DatabaseJob($job, $jobPersister, $eventManager);
         }, $this->cronListGateway->getList());
     }

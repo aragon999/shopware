@@ -18,14 +18,6 @@
             <tag name="console.command" command="sw:clone:category:tree"/>
         </service>
 
-        <service id="shopware.commands.cron_list_command" class="Shopware\Commands\CronListCommand">
-            <tag name="console.command" command="sw:cron:list"/>
-        </service>
-
-        <service id="shopware.commands.cron_run_command" class="Shopware\Commands\CronRunCommand">
-            <tag name="console.command" command="sw:cron:run"/>
-        </service>
-
         <service id="shopware.commands.database_setup_command" class="Shopware\Commands\DatabaseSetupCommand">
             <tag name="console.command" command="sw:database:setup"/>
         </service>
