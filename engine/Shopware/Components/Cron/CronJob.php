@@ -21,9 +21,16 @@
  * trademark license. Therefore any rights, title and interest in
  * our trademarks remain entirely with us.
  */
-
-class Shopware_Components_Cron_CronJob extends Enlight_Components_Cron_EventArgs
+class Shopware_Components_Cron_CronJob extends \Enlight_Event_EventArgs
 {
+    /**
+     * @return \Cron\Job\JobInterface
+     */
+    public function getJob()
+    {
+        return $this->get('job');
+    }
+
     /**
      * Returns the job data
      *
