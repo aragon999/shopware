@@ -1,3 +1,4 @@
+
 <?php
 /**
  * Shopware 5
@@ -22,6 +23,7 @@
  * our trademarks remain entirely with us.
  */
 
+use Cron\Cron;
 use Shopware\Components\CSRFWhitelistAware;
 
 class Shopware_Controllers_Backend_Cron extends Enlight_Controller_Action implements CSRFWhitelistAware
@@ -43,14 +45,24 @@ class Shopware_Controllers_Backend_Cron extends Enlight_Controller_Action implem
             return;
         }
 
-        /** @var Enlight_Components_Cron_Manager $cronManager */
-        $cronManager = Shopware()->Container()->get('cron');
-
         set_time_limit(0);
 
-        while (($job = $cronManager->getNextJob()) !== null) {
-            echo 'Processing ' . $job->getName() . "\n";
-            $cronManager->runJob($job);
+        $resolver = $this->get('shopware_cron.cron_shopware_resolver');
+        $cron = new Cron();
+        $cron->setResolver($this->get('shopware_cron.cron_shopware_resolver'));
+        $cron->setExecutor($this->get('shopware_cron.cron_executor'));
+
+        $reports = $cron->run();
+
+        while ($cron->isRunning()) {
+        }
+
+        foreach ($reports->getReports() as $jobReport) {
+            if ($jobReport->isSuccessful()) {
+                printf("Cronjob %s was successful\n", $jobReport->getJob()->getJobStruct()->getName());
+            } else {
+                printf("Cronjob %s failed\n", $jobReport->getJob()->getJobStruct()->getName());
+            }
         }
     }
 

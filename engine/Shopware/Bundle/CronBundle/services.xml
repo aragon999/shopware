@@ -35,6 +35,8 @@
             <argument type="service" id="events" />
         </service>
 
+        <service id="shopware_cron.cron_executor" class="Cron\Executor\Executor" />
+
         <service id="shopware_cron.cron_command_line_executor" class="Shopware\Bundle\CronBundle\Cron\Executor\CommandLineExecutor" />
 
         <service id="shopware_cron.cron_list_command" class="Shopware\Bundle\CronBundle\Command\CronListCommand">
