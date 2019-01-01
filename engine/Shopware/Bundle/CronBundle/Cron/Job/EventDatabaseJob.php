@@ -22,21 +22,36 @@
  * our trademarks remain entirely with us.
  */
 
-namespace Shopware\Bundle\CronBundle\Gateway;
+namespace Shopware\Bundle\CronBundle\Cron\Job;
 
-use Shopware\Bundle\CronBundle\Cron\Job\AbstractDatabaseJob;
+use Cron\Report\JobReport;
 
 /**
  * @category Shopware
  *
  * @copyright Copyright (c) shopware AG (http://www.shopware.de)
  */
-interface JobPersisterGatewayInterface
+class EventDatabaseJob extends AbstractDatabaseJob
 {
     /**
-     * Get a list of all cronjobs
-     *
-     * @return Job[]
+     * {@inheritdoc}
      */
-    public function updateJob(AbstractDatabaseJob $job);
+    protected function executeJob(JobReport $report)
+    {
+        $jobStruct = $report->getJob()->getJobStruct();
+
+        $jobArgs = new \Shopware_Components_Cron_CronJob([
+            'subject' => $this,
+            'job' => $report->getJob(),
+        ]);
+        $jobArgs->setReturn($jobStruct->getData());
+        $jobArgs = $this->eventManager->notifyUntil(
+            $jobStruct->getAction(),
+            $jobArgs
+        );
+
+        if ($jobArgs !== null) {
+            $report->addOutput($jobArgs->getReturn());
+        }
+    }
 }

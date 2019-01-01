@@ -26,7 +26,7 @@ namespace Shopware\Bundle\CronBundle\Gateway;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Type;
-use Shopware\Bundle\CronBundle\Cron\Job\DatabaseJob;
+use Shopware\Bundle\CronBundle\Cron\Job\AbstractDatabaseJob;
 
 class JobPersisterGateway implements JobPersisterGatewayInterface
 {
@@ -38,9 +38,9 @@ class JobPersisterGateway implements JobPersisterGatewayInterface
     /**
      * Persists the given job to the database
      *
-     * @param DatabaseJob $job
+     * @param AbstractDatabaseJob $job
      */
-    public function updateJob(DatabaseJob $job)
+    public function updateJob(AbstractDatabaseJob $job)
     {
         $jobStruct = $job->getJobStruct();
         if (!$jobStruct->getId()) {

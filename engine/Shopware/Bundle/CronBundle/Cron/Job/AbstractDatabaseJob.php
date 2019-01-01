@@ -37,27 +37,27 @@ use Shopware\Bundle\CronBundle\Struct;
  *
  * @copyright Copyright (c) shopware AG (http://www.shopware.de)
  */
-class DatabaseJob extends AbstractJob
+abstract class AbstractDatabaseJob extends AbstractJob
 {
     /**
      * @var Struct\Job
      */
-    private $jobStruct;
+    protected $jobStruct;
 
     /**
      * @var JobPersisterGatewayInterface
      */
-    private $jobPersister;
+    protected $jobPersister;
 
     /**
      * @var EventManager
      */
-    private $eventManager;
+    protected $eventManager;
 
     /**
      * @var bool
      */
-    private $force = false;
+    protected $force = false;
 
     /**
      * @param Struct\Job                   $jobStruct
@@ -109,19 +109,7 @@ class DatabaseJob extends AbstractJob
 
         $jobStruct = $report->getJob()->getJobStruct();
         try {
-            $jobArgs = new \Shopware_Components_Cron_CronJob([
-                'subject' => $this,
-                'job' => $report->getJob(),
-            ]);
-            $jobArgs->setReturn($jobStruct->getData());
-            $jobArgs = $this->eventManager->notifyUntil(
-                $jobStruct->getAction(),
-                $jobArgs
-            );
-
-            if ($jobArgs !== null) {
-                $report->addOutput($jobArgs->getReturn());
-            }
+            $this->executeJob($report);
 
             //$report->addOutput($job->getData());
             $report->setEndTime(microtime(true));
@@ -132,8 +120,8 @@ class DatabaseJob extends AbstractJob
                 'job' => $report->getJob(),
             ]);
         } catch (\Throwable $e) {
+            $report->setEndTime(microtime(true));
             $report->setSuccessful(false);
-            $jobStruct->setEnd(new \DateTime());
 
             if ($jobStruct->shouldDisableOnError()) {
                 $jobStruct->setActive(false);
@@ -163,4 +151,9 @@ class DatabaseJob extends AbstractJob
     {
         return new DatabaseJobReport($this, $this->jobPersister);
     }
+
+    /**
+     * @param JobReport $report
+     */
+    abstract protected function executeJob(JobReport $report);
 }

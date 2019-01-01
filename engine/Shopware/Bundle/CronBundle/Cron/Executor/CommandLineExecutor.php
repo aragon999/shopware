@@ -27,7 +27,7 @@ namespace Shopware\Bundle\CronBundle\Cron\Executor;
 use Cron\Executor\Executor as CronExecutor;
 use Cron\Executor\ExecutorSet;
 use Cron\Report\CronReport;
-use Shopware\Bundle\CronBundle\Cron\Job\DatabaseJob;
+use Shopware\Bundle\CronBundle\Cron\Job\AbstractDatabaseJob;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -76,7 +76,7 @@ class CommandLineExecutor extends CronExecutor
     protected function getJobName(ExecutorSet $set): string
     {
         $job = $set->getJob();
-        if ($job instanceof DatabaseJob) {
+        if ($job instanceof AbstractDatabaseJob) {
             $jobStruct = $job->getJobStruct();
 
             return "{$jobStruct->getName()} ({$jobStruct->getAction()})";

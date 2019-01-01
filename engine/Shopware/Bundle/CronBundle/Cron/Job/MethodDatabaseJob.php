@@ -22,21 +22,37 @@
  * our trademarks remain entirely with us.
  */
 
-namespace Shopware\Bundle\CronBundle\Gateway;
+namespace Shopware\Bundle\CronBundle\Cron\Job;
 
-use Shopware\Bundle\CronBundle\Cron\Job\AbstractDatabaseJob;
+use Cron\Report\JobReport;
 
 /**
  * @category Shopware
  *
  * @copyright Copyright (c) shopware AG (http://www.shopware.de)
  */
-interface JobPersisterGatewayInterface
+class MethodDatabaseJob extends AbstractDatabaseJob
 {
     /**
-     * Get a list of all cronjobs
-     *
-     * @return Job[]
+     * {@inheritdoc}
      */
-    public function updateJob(AbstractDatabaseJob $job);
+    protected function executeJob(JobReport $report)
+    {
+        list($diService, $method) = explode($report->getJob()->getJobStruct()->getAction());
+
+        if (!$this->container->has($diService)) {
+            throw new \Exception('Error Processing Request', 1);
+        }
+
+        $service = $this->container->get($diService);
+        if (!method_exists($service, $method)) {
+            throw new \Exception('Error Processing Request', 1);
+        }
+
+        $result = $service->$action($report);
+
+        if ($result !== null) {
+            $report->addOutput($result);
+        }
+    }
 }

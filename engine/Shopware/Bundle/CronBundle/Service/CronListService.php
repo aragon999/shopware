@@ -25,7 +25,7 @@
 namespace Shopware\Bundle\CronBundle\Service;
 
 use Enlight_Event_EventManager as EventManager;
-use Shopware\Bundle\CronBundle\Cron\Job\DatabaseJob;
+use Shopware\Bundle\CronBundle\Cron\Job\EventDatabaseJob;
 use Shopware\Bundle\CronBundle\Gateway\CronListGatewayInterface;
 use Shopware\Bundle\CronBundle\Gateway\JobPersisterGatewayInterface;
 use Shopware\Bundle\CronBundle\Struct\Job;
@@ -76,7 +76,7 @@ class CronListService implements CronListServiceInterface
         $eventManager = $this->eventManager;
 
         return array_map(function (Job $job) use ($jobPersister, $eventManager) {
-            return new DatabaseJob($job, $jobPersister, $eventManager);
+            return new EventDatabaseJob($job, $jobPersister, $eventManager);
         }, $this->cronListGateway->getList());
     }
 }

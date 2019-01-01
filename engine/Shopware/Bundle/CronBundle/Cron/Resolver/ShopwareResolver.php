@@ -27,7 +27,7 @@ namespace Shopware\Bundle\CronBundle\Cron\Resolver;
 use Cron\Resolver\ArrayResolver;
 use Doctrine\Common\Collections\ArrayCollection;
 use Enlight_Event_EventManager as EventManager;
-use Shopware\Bundle\CronBundle\Cron\Job\DatabaseJob;
+use Shopware\Bundle\CronBundle\Cron\Job\AbstractDatabaseJob;
 use Shopware\Bundle\CronBundle\Service\CronListServiceInterface;
 
 /**
@@ -105,7 +105,7 @@ class ShopwareResolver extends ArrayResolver
 
         if ($this->force) {
             $this->jobs = array_map(function ($job) {
-                if ($job instanceof DatabaseJob) {
+                if ($job instanceof AbstractDatabaseJob) {
                     $job->setForce(true);
                 }
 

@@ -25,7 +25,7 @@
 namespace Shopware\Bundle\CronBundle\Cron\Report;
 
 use Cron\Report\JobReport;
-use Shopware\Bundle\CronBundle\Cron\Job\DatabaseJob;
+use Shopware\Bundle\CronBundle\Cron\Job\AbstractDatabaseJob;
 use Shopware\Bundle\CronBundle\Gateway\JobPersisterGatewayInterface;
 
 /**
@@ -36,7 +36,7 @@ use Shopware\Bundle\CronBundle\Gateway\JobPersisterGatewayInterface;
 class DatabaseJobReport extends JobReport
 {
     /**
-     * @var DatabaseJob
+     * @var AbstractDatabaseJob
      */
     protected $job;
 
@@ -46,10 +46,10 @@ class DatabaseJobReport extends JobReport
     protected $jobPersister;
 
     /**
-     * @param DatabaseJob                  $job
+     * @param AbstractDatabaseJob          $job
      * @param JobPersisterGatewayInterface $jobPersister
      */
-    public function __construct(DatabaseJob $job, JobPersisterGatewayInterface $jobPersister)
+    public function __construct(AbstractDatabaseJob $job, JobPersisterGatewayInterface $jobPersister)
     {
         $this->job = $job;
         $this->jobPersister = $jobPersister;
