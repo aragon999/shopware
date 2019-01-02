@@ -100,7 +100,7 @@ abstract class AbstractDatabaseJob extends AbstractJob
      */
     public function valid(\DateTime $now): bool
     {
-        return $this->force || parent::valid($now) && !$this->isRunning();
+        return $this->force || parent::valid($now) && !$this->isRunning() && $this->getJobStruct()->isActive();
     }
 
     public function run(JobReport $report)
