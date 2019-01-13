@@ -21,6 +21,7 @@
  * trademark license. Therefore any rights, title and interest in
  * our trademarks remain entirely with us.
  */
+
 use Shopware\Components\DependencyInjection\ContainerAwareInterface;
 
 /**
@@ -372,9 +373,9 @@ class Enlight_Controller_Dispatcher_Default extends Enlight_Controller_Dispatche
         $moduleName = $this->formatModuleName($this->curModule);
 
         if ($event = Shopware()->Events()->notifyUntil(
-                'Enlight_Controller_Dispatcher_ControllerPath_' . $moduleName . '_' . $controllerName,
-                ['subject' => $this, 'request' => $request]
-                )
+            'Enlight_Controller_Dispatcher_ControllerPath_' . $moduleName . '_' . $controllerName,
+            ['subject' => $this, 'request' => $request]
+        )
         ) {
             $path = $event->getReturn();
         } else {
@@ -498,8 +499,9 @@ class Enlight_Controller_Dispatcher_Default extends Enlight_Controller_Dispatche
      *
      * @throws Enlight_Controller_Exception|Enlight_Exception|Exception
      */
-    public function dispatch(Enlight_Controller_Request_Request $request,
-                             Enlight_Controller_Response_Response $response
+    public function dispatch(
+        Enlight_Controller_Request_Request $request,
+        Enlight_Controller_Response_Response $response
     ) {
         $this->setResponse($response);
 
@@ -523,6 +525,14 @@ class Enlight_Controller_Dispatcher_Default extends Enlight_Controller_Dispatche
         } catch (Exception $e) {
             throw new Enlight_Exception('Controller "' . $class . '" can\'t load failure');
         }
+
+        $class = (new \ReflectionClass($class))->getName();
+        $controllerName = str_replace([
+            'Shopware_Controllers_Frontend_',
+            'Shopware_Controllers_Widgets_',
+            'Shopware_Controllers_Backend_',
+        ], '', $class);
+        $request->setControllerName($controllerName);
 
         $proxy = Shopware()->Hooks()->getProxy($class);
 
