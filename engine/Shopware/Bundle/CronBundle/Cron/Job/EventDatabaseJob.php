@@ -49,6 +49,8 @@ class EventDatabaseJob extends AbstractDatabaseJob
             $jobStruct->getAction(),
             $jobArgs
         );
+        var_dump($jobArgs);
+        die();
 
         if ($jobArgs !== null) {
             $report->addOutput($jobArgs->getReturn());

@@ -109,7 +109,7 @@ class Job implements \JsonSerializable
     /**
      * @return int
      */
-    public function getId(): string
+    public function getId(): int
     {
         return $this->id;
     }

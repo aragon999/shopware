@@ -71,7 +71,8 @@ class CronRunCommand extends ShopwareCommand
     {
         $this
             ->setDescription('Runs cronjobs.')
-            ->setHelp(<<<'EOF'
+            ->setHelp(
+                <<<'EOF'
 The <info>%command.name%</info> runs due cronjobs.
 EOF
             )
@@ -124,7 +125,7 @@ EOF
         while ($cron->isRunning()) {
         }
 
-        $output->writeln('Successfully executed all crons in: ' . (microtime(true) - $time) . ' seconsds');
+        $output->writeln('Successfully executed all crons in: ' . (microtime(true) - $time) . ' seconds');
 
         return 0;
     }

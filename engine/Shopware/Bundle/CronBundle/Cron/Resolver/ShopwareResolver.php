@@ -75,15 +75,16 @@ class ShopwareResolver extends ArrayResolver
         parent::__construct(iterator_to_array($jobs, false));
     }
 
+    /**
+     * @param bool $force
+     */
     public function setForce(bool $force)
     {
         $this->force = $force;
     }
 
     /**
-     * Return all due jobs
-     *
-     * @return Job[]
+     * {@inheritdoc}
      */
     public function resolve()
     {

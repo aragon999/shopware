@@ -103,6 +103,9 @@ class DatabaseJobReport extends JobReport
         $this->jobPersister->updateJob($this->job);
     }
 
+    /**
+     * @return string
+     */
     private function getFormatedData(): string
     {
         return implode("\n", $this->getOutput()) . "\n" . implode("\n", $this->getError());

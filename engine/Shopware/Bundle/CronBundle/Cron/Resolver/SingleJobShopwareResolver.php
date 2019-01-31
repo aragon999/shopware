@@ -45,9 +45,7 @@ class SingleJobShopwareResolver extends ShopwareResolver
     }
 
     /**
-     * Return all due jobs
-     *
-     * @return Job[]
+     * {@inheritdoc}
      */
     public function resolve()
     {

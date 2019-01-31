@@ -49,7 +49,7 @@ class MethodDatabaseJob extends AbstractDatabaseJob
             throw new \Exception('Error Processing Request', 1);
         }
 
-        $result = $service->$action($report);
+        $result = $service->$method($report);
 
         if ($result !== null) {
             $report->addOutput($result);
